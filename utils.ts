@@ -26,8 +26,12 @@ function stringToBool(string?: string) {
   return true;
 }
 
+let client: SMTPClient | null;
+
 export function getClient() {
-  return new SMTPClient({
+  if(client) return client;
+
+  client = new SMTPClient({
     connection: {
       hostname: Deno.env.get("SMTP_HOST")!,
       port: +Deno.env.get("SMTP_PORT")!,
@@ -38,6 +42,8 @@ export function getClient() {
       },
     },
   });
+  
+  return client;
 }
 
 // deno-lint-ignore no-explicit-any

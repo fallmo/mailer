@@ -10,7 +10,7 @@ export const sendMailHandler: handler = async (req, res, next) => {
 
   try {
     await client.send({
-      from: fields.from || Deno.env.get("SMTP_USERNAME")!,
+      from: fields.from || Deno.env.get("SMTP_NAME") ? `${Deno.env.get("SMTP_NAME")} <${Deno.env.get("SMTP_USERNAME")}>`: Deno.env.get("SMTP_USERNAME")!,
       to: fields.to,
       subject: fields.subject,
       content: fields.content,

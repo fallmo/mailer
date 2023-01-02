@@ -26,12 +26,25 @@ function stringToBool(string?: string) {
   return true;
 }
 
-let client: SMTPClient | null;
+// let client: SMTPClient | null;
 
 export function getClient() {
-  if(client) return client;
+  // if(client) return client;
 
-  client = new SMTPClient({
+  // client = new SMTPClient({
+  //   connection: {
+  //     hostname: Deno.env.get("SMTP_HOST")!,
+  //     port: +Deno.env.get("SMTP_PORT")!,
+  //     tls: stringToBool(Deno.env.get("SMTP_TLS")),
+  //     auth: {
+  //       username: Deno.env.get("SMTP_USERNAME")!,
+  //       password: Deno.env.get("SMTP_PASSWORD")!,
+  //     },
+  //   },
+  // });
+
+  // return client;
+  return new SMTPClient({
     connection: {
       hostname: Deno.env.get("SMTP_HOST")!,
       port: +Deno.env.get("SMTP_PORT")!,
@@ -42,8 +55,6 @@ export function getClient() {
       },
     },
   });
-  
-  return client;
 }
 
 // deno-lint-ignore no-explicit-any

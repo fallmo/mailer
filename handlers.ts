@@ -2,6 +2,7 @@ import { handler } from "./types.ts";
 import { getClient, validateSendMailBody } from "./utils.ts";
 
 export const sendMailHandler: handler = async (req, res, next) => {
+  console.log(`incoming mail request ...`);
   const client = getClient();
 
   const { error, fields } = validateSendMailBody(req.body);
@@ -9,18 +10,21 @@ export const sendMailHandler: handler = async (req, res, next) => {
   if (error) return res.setStatus(400).json({ error: error.message });
 
   try {
+    res.setStatus(200).json({ ok: true });
     await client.send({
-      from: fields.from || Deno.env.get("SMTP_NAME") ? `${Deno.env.get("SMTP_NAME")} <${Deno.env.get("SMTP_USERNAME")}>`: Deno.env.get("SMTP_USERNAME")!,
+      from:
+        fields.from || Deno.env.get("SMTP_NAME")
+          ? `${Deno.env.get("SMTP_NAME")} <${Deno.env.get("SMTP_USERNAME")}>`
+          : Deno.env.get("SMTP_USERNAME")!,
       to: fields.to,
       subject: fields.subject,
       content: fields.content,
       html: fields.html,
     });
 
-    console.log(`mail => ${fields.to} subject: '${fields.subject}'`);
-
     await client.close();
-    res.setStatus(200).json({ ok: true });
+
+    console.log(`mail => ${fields.to} subject: '${fields.subject}'`);
   } catch (err) {
     console.log(err);
     console.log("body: ", fields);
